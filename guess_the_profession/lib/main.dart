@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:guess_the_profession/screens/gameplay.dart';
+import 'package:guess_the_profession/screens/difficulty_levels.dart';
 
 void main() {
   runApp(const MyApp());
@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.grey),
         useMaterial3: true,
       ),
-      home: const Gameplay(title: 'GuessTheProfession'),
+      home: const DifficultyLevels(title: "GuessTheProfession"),
     );
   }
 }

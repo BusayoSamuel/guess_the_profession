@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:guess_the_profession/widgets/background.dart';
 
 class Gameplay extends StatefulWidget {
   const Gameplay({super.key, required this.title});
@@ -13,15 +14,7 @@ class Gameplay extends StatefulWidget {
 class _GameplayState extends State<Gameplay> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFDAFFFB),
-      appBar: AppBar(
-        backgroundColor: const Color(0xFF001C30),
-        title: Text(
-          widget.title,
-          style: const TextStyle(color: Color(0xFFDAFFFB)),
-        ),
-      ),
+    return Background(
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 5),
         child: Column(
@@ -41,11 +34,13 @@ class _GameplayState extends State<Gameplay> {
               thickness: 1,
             ),
             GridView(
-                shrinkWrap: true,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 6,
-                ),
-                children: letterOptions(context, letters: [
+              shrinkWrap: true,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 6,
+              ),
+              children: letterOptions(
+                context,
+                letters: [
                   "T",
                   "B",
                   "C",
@@ -58,7 +53,9 @@ class _GameplayState extends State<Gameplay> {
                   "C",
                   "L",
                   "R",
-                ])),
+                ],
+              ),
+            ),
           ],
         ),
       ),
