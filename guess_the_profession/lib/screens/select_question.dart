@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:guess_the_profession/data/easy_questions.dart';
+import 'package:guess_the_profession/models/question.dart';
 import 'package:guess_the_profession/widgets/background.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:guess_the_profession/screens/gameplay.dart';
 
 class SelectQuestion extends StatefulWidget {
-  const SelectQuestion({super.key});
+  const SelectQuestion({super.key, required this.difficulty});
+
+  final String difficulty;
 
   @override
   State<SelectQuestion> createState() => _SelectQuestionState();
@@ -14,46 +18,31 @@ class _SelectQuestionState extends State<SelectQuestion> {
   @override
   Widget build(BuildContext context) {
     return Background(
+      title: "Select Level",
       body: GridView(
         shrinkWrap: true,
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 5,
         ),
-        children: questions(
-          context,
-          questions: [
-            "1",
-            "2",
-            "3",
-            "4",
-            "5",
-            "6",
-            "7",
-            "8",
-            "9",
-            "10",
-            "11",
-            "12",
-          ],
-        ),
+        children: questions(context, questions: easyQuestions),
       ),
     );
   }
 }
 
 List<Widget> questions(BuildContext context,
-    {required List<String> questions}) {
+    {required List<Question> questions}) {
   List<Widget> children = [];
   final w = (MediaQuery.of(context).size.width - 4 * (5 - 1)) / 5;
 
-  for (final question in questions) {
-    children.add(questionButton(context, number: question));
+  for (int i = 0; i < questions.length; i++) {
+    children.add(questionButton(context, index: i));
   }
   return children;
 }
 
 Widget questionButton(BuildContext context,
-    {required String number, double size = 30}) {
+    {required int index, double size = 30}) {
   return TextButton(
     style: ButtonStyle(
       backgroundColor: MaterialStateProperty.all(Color(0xFF001C30)),
@@ -73,11 +62,13 @@ Widget questionButton(BuildContext context,
       Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => const Gameplay(title: 'GuessTheProfession')),
+            builder: (context) => Gameplay(
+                  question: easyQuestions[index],
+                )),
       );
     },
     child: AutoSizeText(
-      number,
+      (index + 1).toString(),
       style: const TextStyle(fontSize: 45, color: Color(0xFFDAFFFB)),
     ),
   );

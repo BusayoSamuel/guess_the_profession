@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:guess_the_profession/models/question.dart';
 import 'package:guess_the_profession/widgets/background.dart';
 
 class Gameplay extends StatefulWidget {
-  const Gameplay({super.key, required this.title});
+  const Gameplay({super.key, required this.question});
 
-  final String title;
+  final Question question;
 
   @override
   State<Gameplay> createState() => _GameplayState();
@@ -15,13 +16,15 @@ class _GameplayState extends State<Gameplay> {
   @override
   Widget build(BuildContext context) {
     return Background(
+      title: "Guess the Profession",
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 5),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
             Image.asset(
-              "assets/images/doctor/stethoscope.jpg",
+              widget.question
+                  .imageLocation, //"assets/images/doctor/stethoscope.jpg",
               height: 250,
             ),
             const Divider(
@@ -38,23 +41,8 @@ class _GameplayState extends State<Gameplay> {
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 6,
               ),
-              children: letterOptions(
-                context,
-                letters: [
-                  "T",
-                  "B",
-                  "C",
-                  "D",
-                  "O",
-                  "F",
-                  "O",
-                  "I",
-                  "J",
-                  "C",
-                  "L",
-                  "R",
-                ],
-              ),
+              children:
+                  letterOptions(context, letters: widget.question.options),
             ),
           ],
         ),

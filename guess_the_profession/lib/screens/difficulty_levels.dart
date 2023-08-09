@@ -3,13 +3,12 @@ import 'package:guess_the_profession/screens/select_question.dart';
 import 'package:guess_the_profession/widgets/background.dart';
 
 class DifficultyLevels extends StatelessWidget {
-  const DifficultyLevels({super.key, required this.title});
-
-  final String title;
+  const DifficultyLevels({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Background(
+      title: "Select Difficulty",
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 50),
         child: Column(
@@ -32,7 +31,10 @@ Widget gamePackButton(BuildContext context, String difficulty) {
       onPressed: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => const SelectQuestion()),
+          MaterialPageRoute(
+              builder: (context) => SelectQuestion(
+                    difficulty: difficulty,
+                  )),
         );
       },
       child: Text("$difficulty Pack"),
