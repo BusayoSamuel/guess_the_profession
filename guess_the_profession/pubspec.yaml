@@ -62,6 +62,8 @@ flutter:
   assets:
      - assets/images/Icon-192.png
      - assets/images/easy_pack/doctor/stethoscope.jpg
+     - assets/images/easy_pack/student/pencil.jpg
+     - assets/images/easy_pack/carpenter/pincers.jpg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

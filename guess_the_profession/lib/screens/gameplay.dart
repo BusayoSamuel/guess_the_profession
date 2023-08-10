@@ -31,7 +31,7 @@ class _GameplayState extends State<Gameplay> {
               color: Colors.black,
               thickness: 1,
             ),
-            answerBoxes(context, 6),
+            answerBoxes(context, number: widget.question.answer.length),
             const Divider(
               color: Colors.black,
               thickness: 1,
@@ -63,37 +63,48 @@ List<Widget> letterOptions(BuildContext context,
 }
 
 Widget letterButton({required String letter, double size = 30}) {
-  return TextButton(
-    style: ButtonStyle(
-      backgroundColor: MaterialStateProperty.all(Color(0xFF001C30)),
-      shape: MaterialStateProperty.all(
-        RoundedRectangleBorder(
-          side: const BorderSide(
-            color: Colors.white,
-            width: 1.0,
+  bool isVisible = true;
+  return StatefulBuilder(builder: (context, setState) {
+    return Visibility(
+      visible: isVisible,
+      child: TextButton(
+        style: ButtonStyle(
+          backgroundColor: MaterialStateProperty.all(Color(0xFF001C30)),
+          shape: MaterialStateProperty.all(
+            RoundedRectangleBorder(
+              side: const BorderSide(
+                color: Colors.white,
+                width: 1.0,
+              ),
+              borderRadius: BorderRadius.circular(10.0),
+            ),
           ),
-          borderRadius: BorderRadius.circular(10.0),
+          fixedSize: MaterialStateProperty.all(Size(size, size)),
+          padding: MaterialStateProperty.all(EdgeInsets.zero),
+        ),
+        onPressed: () {
+          setState(() {
+            isVisible = !isVisible;
+          });
+        },
+        child: AutoSizeText(
+          letter,
+          style: const TextStyle(fontSize: 45, color: Color(0xFFDAFFFB)),
         ),
       ),
-      fixedSize: MaterialStateProperty.all(Size(size, size)),
-      padding: MaterialStateProperty.all(EdgeInsets.zero),
-    ),
-    onPressed: () {},
-    child: AutoSizeText(
-      letter,
-      style: const TextStyle(fontSize: 45, color: Color(0xFFDAFFFB)),
-    ),
-  );
+    );
+  });
 }
 
-Widget answerBoxes(BuildContext context, answerLength) {
-  final size = (MediaQuery.of(context).size.width - 14 * (6 - 1)) / 6;
+Widget answerBoxes(BuildContext context, {required int number}) {
+  final size = (MediaQuery.of(context).size.width - 14 * (number - 1)) / number;
 
   return Wrap(
     runSpacing: 4,
     spacing: 4,
     alignment: WrapAlignment.center,
-    children: List.generate(6, (index) {
+    // TODO: Make answer buttons iteractive
+    children: List.generate(number, (index) {
       return Container(
         decoration: const BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(5)),
