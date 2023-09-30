@@ -4,6 +4,7 @@ import 'package:guess_the_profession/models/question.dart';
 import 'package:guess_the_profession/widgets/background.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:guess_the_profession/screens/gameplay.dart';
+import 'package:provider/provider.dart';
 
 class SelectQuestion extends StatefulWidget {
   const SelectQuestion({super.key, required this.difficulty});
@@ -17,14 +18,19 @@ class SelectQuestion extends StatefulWidget {
 class _SelectQuestionState extends State<SelectQuestion> {
   @override
   Widget build(BuildContext context) {
-    return Background(
-      title: "Select Level",
-      body: GridView(
-        shrinkWrap: true,
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 5,
+    easyQuestions[0].unlock();
+
+    return ChangeNotifierProvider.value(
+      value: easyQuestions.first,
+      child: Background(
+        title: "Select Level",
+        body: GridView(
+          shrinkWrap: true,
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 5,
+          ),
+          children: questions(context, questions: easyQuestions),
         ),
-        children: questions(context, questions: easyQuestions),
       ),
     );
   }
@@ -45,7 +51,10 @@ Widget questionButton(BuildContext context,
     {required int index, double size = 30}) {
   return TextButton(
     style: ButtonStyle(
-      backgroundColor: MaterialStateProperty.all(Color(0xFF001C30)),
+      //overlayColor: MaterialStateProperty.all(Colors.grey[700]),
+      backgroundColor: easyQuestions[index].unlocked || index == 0
+          ? MaterialStateProperty.all(Color(0xFF001C30))
+          : MaterialStateProperty.all(Colors.grey[700]),
       shape: MaterialStateProperty.all(
         RoundedRectangleBorder(
           side: const BorderSide(
@@ -59,13 +68,18 @@ Widget questionButton(BuildContext context,
       padding: MaterialStateProperty.all(EdgeInsets.zero),
     ),
     onPressed: () {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => Gameplay(
-                  question: easyQuestions[index],
-                )),
-      );
+      int nextIndex = index + 1 < easyQuestions.length ? index + 1 : index;
+
+      if (easyQuestions[index].unlocked) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => Gameplay(
+                    question: easyQuestions[index],
+                    nextQuestion: easyQuestions[nextIndex],
+                  )),
+        );
+      }
     },
     child: AutoSizeText(
       (index + 1).toString(),

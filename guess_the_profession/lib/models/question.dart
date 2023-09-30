@@ -1,9 +1,12 @@
 import 'dart:math';
 
-class Question {
+import 'package:flutter/material.dart';
+
+class Question extends ChangeNotifier {
   final String answer;
   final String imageLocation;
   late List<String> options;
+  bool unlocked = false;
 
   Question(this.answer, this.imageLocation) {
     List<String> alphabet =
@@ -17,5 +20,9 @@ class Question {
     }
 
     options.shuffle();
+  }
+
+  void unlock() {
+    unlocked = true;
   }
 }
