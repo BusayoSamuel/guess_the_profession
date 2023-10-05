@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:guess_the_profession/models/question.dart';
 import 'package:guess_the_profession/screens/select_question.dart';
 import 'package:guess_the_profession/widgets/background.dart';
+import 'package:guess_the_profession/data/questions.dart';
+
+enum Difficulty { easy, medium, hard }
 
 class DifficultyLevels extends StatelessWidget {
   const DifficultyLevels({super.key});
@@ -14,9 +18,9 @@ class DifficultyLevels extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            gamePackButton(context, "Easy"),
-            gamePackButton(context, "Medium"),
-            gamePackButton(context, "Hard"),
+            gamePackButton(context, Difficulty.easy),
+            gamePackButton(context, Difficulty.medium),
+            gamePackButton(context, Difficulty.hard),
           ],
         ),
       ),
@@ -24,7 +28,20 @@ class DifficultyLevels extends StatelessWidget {
   }
 }
 
-Widget gamePackButton(BuildContext context, String difficulty) {
+Widget gamePackButton(BuildContext context, Difficulty difficulty) {
+  ValueNotifier<List<Question>> selectedQuestionPack;
+  String text;
+  switch (difficulty) {
+    case Difficulty.easy:
+      text = "Easy Pack";
+      selectedQuestionPack = easyQuestions;
+    case Difficulty.medium:
+      text = "Medium Pack";
+    //selectedQuestionPack = mediumQuestions;
+    case Difficulty.hard:
+      text = "Hard Pack";
+    //selectedQuestionPack = hardQuestions;
+  }
   return SizedBox(
     width: double.infinity,
     child: OutlinedButton(
@@ -33,11 +50,11 @@ Widget gamePackButton(BuildContext context, String difficulty) {
           context,
           MaterialPageRoute(
               builder: (context) => SelectQuestion(
-                    difficulty: difficulty,
+                    questions: easyQuestions,
                   )),
         );
       },
-      child: Text("$difficulty Pack"),
+      child: Text(text),
     ),
   );
 }

@@ -47,7 +47,7 @@ class Gameplay extends StatelessWidget {
             GridView(
               shrinkWrap: true,
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 6,
+                crossAxisCount: 6, 
               ),
               children: letterOptions(context, letters: question.options),
             ),
@@ -97,7 +97,7 @@ class Gameplay extends StatelessWidget {
                         TextButton(
                           onPressed: () {
                             nextQuestion.unlock();
-                            nextQuestion.notifyListeners();
+                            question.unlock();
                             Navigator.pop(context);
                             Navigator.pop(context);
                           },

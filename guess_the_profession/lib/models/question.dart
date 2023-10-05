@@ -24,5 +24,6 @@ class Question extends ChangeNotifier {
 
   void unlock() {
     unlocked = true;
+    notifyListeners();
   }
 }

@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:guess_the_profession/data/easy_questions.dart';
+import 'package:guess_the_profession/data/questions.dart';
 import 'package:guess_the_profession/models/question.dart';
+import 'package:guess_the_profession/screens/difficulty_levels.dart';
 import 'package:guess_the_profession/widgets/background.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:guess_the_profession/screens/gameplay.dart';
 import 'package:provider/provider.dart';
 
 class SelectQuestion extends StatefulWidget {
-  const SelectQuestion({super.key, required this.difficulty});
+  const SelectQuestion({super.key, required this.questions});
 
-  final String difficulty;
+  final ValueNotifier<List<Question>> questions;
 
   @override
   State<SelectQuestion> createState() => _SelectQuestionState();
@@ -18,10 +19,10 @@ class SelectQuestion extends StatefulWidget {
 class _SelectQuestionState extends State<SelectQuestion> {
   @override
   Widget build(BuildContext context) {
-    easyQuestions[0].unlock();
+    widget.questions.value[0].unlock();
 
     return ChangeNotifierProvider.value(
-      value: easyQuestions.first,
+      value: widget.questions,
       child: Background(
         title: "Select Level",
         body: GridView(
@@ -29,7 +30,7 @@ class _SelectQuestionState extends State<SelectQuestion> {
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 5,
           ),
-          children: questions(context, questions: easyQuestions),
+          children: questions(context, questions: widget.questions),
         ),
       ),
     );
@@ -37,22 +38,23 @@ class _SelectQuestionState extends State<SelectQuestion> {
 }
 
 List<Widget> questions(BuildContext context,
-    {required List<Question> questions}) {
+    {required ValueNotifier<List<Question>> questions}) {
   List<Widget> children = [];
   final w = (MediaQuery.of(context).size.width - 4 * (5 - 1)) / 5;
 
-  for (int i = 0; i < questions.length; i++) {
-    children.add(questionButton(context, index: i));
+  for (int i = 0; i < questions.value.length; i++) {
+    children.add(questionButton(context, index: i, questions: questions));
   }
   return children;
 }
 
 Widget questionButton(BuildContext context,
-    {required int index, double size = 30}) {
+    {required int index,
+    required ValueNotifier<List<Question>> questions,
+    double size = 30}) {
   return TextButton(
     style: ButtonStyle(
-      //overlayColor: MaterialStateProperty.all(Colors.grey[700]),
-      backgroundColor: easyQuestions[index].unlocked || index == 0
+      backgroundColor: questions.value[index].unlocked || index == 0
           ? MaterialStateProperty.all(Color(0xFF001C30))
           : MaterialStateProperty.all(Colors.grey[700]),
       shape: MaterialStateProperty.all(
@@ -68,15 +70,15 @@ Widget questionButton(BuildContext context,
       padding: MaterialStateProperty.all(EdgeInsets.zero),
     ),
     onPressed: () {
-      int nextIndex = index + 1 < easyQuestions.length ? index + 1 : index;
+      int nextIndex = index + 1 < questions.value.length ? index + 1 : index;
 
-      if (easyQuestions[index].unlocked) {
+      if (questions.value[index].unlocked) {
         Navigator.push(
           context,
           MaterialPageRoute(
               builder: (context) => Gameplay(
-                    question: easyQuestions[index],
-                    nextQuestion: easyQuestions[nextIndex],
+                    question: questions.value[index],
+                    nextQuestion: questions.value[nextIndex],
                   )),
         );
       }
