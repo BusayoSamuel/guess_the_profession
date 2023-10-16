@@ -1,13 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:guess_the_profession/models/question.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:guess_the_profession/widgets/background.dart';
 
-class Gameplay extends StatelessWidget {
-  Gameplay({super.key, required this.question, required this.nextQuestion});
+class Gameplay extends ConsumerWidget {
+  Gameplay(
+      {super.key,
+      required this.question,
+      required this.nextQuestionIndex,
+      required this.questionProvider});
 
+  final ChangeNotifierProvider<QuestionsNotifier> questionProvider;
   final Question question;
-  final Question nextQuestion;
+  final int nextQuestionIndex;
 
   late final chosenLetters =
       ValueNotifier(List<List>.filled(question.answer.length, ["", () {}]));
@@ -15,7 +21,7 @@ class Gameplay extends StatelessWidget {
       List<void Function()>.filled(question.answer.length, () {});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Background(
       title: "Guess the Profession",
       body: Padding(
@@ -47,9 +53,12 @@ class Gameplay extends StatelessWidget {
             GridView(
               shrinkWrap: true,
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 6, 
+                crossAxisCount: 6,
               ),
-              children: letterOptions(context, letters: question.options),
+              children: letterOptions(context,
+                  letters: question.options,
+                  ref: ref,
+                  questionProvider: questionProvider),
             ),
           ],
         ),
@@ -58,22 +67,28 @@ class Gameplay extends StatelessWidget {
   }
 
   List<Widget> letterOptions(BuildContext context,
-      {required List<String> letters}) {
+      {required List<String> letters,
+      required WidgetRef ref,
+      required ChangeNotifierProvider<QuestionsNotifier> questionProvider}) {
     List<Widget> children = [];
     final w = (MediaQuery.of(context).size.width - 4 * (12 - 1)) / 12;
 
     for (final letter in letters) {
-      children.add(letterButton(letter: letter));
+      children.add(letterButton(
+          letter: letter, ref: ref, questionProvider: questionProvider));
     }
     return children;
   }
 
-  Widget letterButton({required String letter, double size = 30}) {
+  Widget letterButton(
+      {required String letter,
+      required WidgetRef ref,
+      required ChangeNotifierProvider<QuestionsNotifier> questionProvider,
+      double size = 30}) {
     bool isVisible = true;
     return StatefulBuilder(builder: (context, setState) {
       void toggleVisibility() {
         setState(() {
-          //selected = letter;
           isVisible = !isVisible;
         });
       }
@@ -96,8 +111,9 @@ class Gameplay extends StatelessWidget {
                       actions: [
                         TextButton(
                           onPressed: () {
-                            nextQuestion.unlock();
-                            question.unlock();
+                            ref
+                                .read(questionProvider.notifier)
+                                .unlockItem(nextQuestionIndex);
                             Navigator.pop(context);
                             Navigator.pop(context);
                           },

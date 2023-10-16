@@ -1,8 +1,9 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:guess_the_profession/data/questions.dart';
 
-class Question extends ChangeNotifier {
+class Question {
   final String answer;
   final String imageLocation;
   late List<String> options;
@@ -21,9 +22,24 @@ class Question extends ChangeNotifier {
 
     options.shuffle();
   }
+}
 
-  void unlock() {
-    unlocked = true;
+class QuestionsNotifier extends ChangeNotifier {
+  var questions = <Question>[];
+
+  QuestionsNotifier(this.questions);
+
+  void unlockItem(int index) {
+    questions[index].unlocked = true;
     notifyListeners();
   }
 }
+
+final easyQuestionsProvider =
+    ChangeNotifierProvider((ref) => QuestionsNotifier(easyQuestions));
+
+final mediumQuestionsProvider =
+    ChangeNotifierProvider((ref) => QuestionsNotifier(mediumQuestions));
+
+final hardQuestionsProvider =
+    ChangeNotifierProvider((ref) => QuestionsNotifier(hardQuestions));

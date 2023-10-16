@@ -1,91 +1,89 @@
 import 'package:flutter/material.dart';
-import 'package:guess_the_profession/data/questions.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:guess_the_profession/models/question.dart';
 import 'package:guess_the_profession/screens/difficulty_levels.dart';
 import 'package:guess_the_profession/widgets/background.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:guess_the_profession/screens/gameplay.dart';
-import 'package:provider/provider.dart';
 
-class SelectQuestion extends StatefulWidget {
-  const SelectQuestion({super.key, required this.questions});
+class SelectQuestion extends ConsumerWidget {
+  const SelectQuestion({super.key, required this.difficulty});
 
-  final ValueNotifier<List<Question>> questions;
+  final Difficulty difficulty;
 
   @override
-  State<SelectQuestion> createState() => _SelectQuestionState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final ChangeNotifierProvider<QuestionsNotifier> questionsProvider;
 
-class _SelectQuestionState extends State<SelectQuestion> {
-  @override
-  Widget build(BuildContext context) {
-    widget.questions.value[0].unlock();
+    if (difficulty == Difficulty.easy) {
+      questionsProvider = easyQuestionsProvider;
+    } else if (difficulty == Difficulty.medium) {
+      questionsProvider = mediumQuestionsProvider;
+    } else {
+      questionsProvider = hardQuestionsProvider;
+    }
 
-    return ChangeNotifierProvider.value(
-      value: widget.questions,
-      child: Background(
-        title: "Select Level",
-        body: GridView(
-          shrinkWrap: true,
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 5,
-          ),
-          children: questions(context, questions: widget.questions),
+    List<Question> questions = ref.watch(questionsProvider).questions;
+    ref.read(questionsProvider.notifier).unlockItem(0);
+
+    return Background(
+      title: "Select Level",
+      body: GridView.builder(
+        shrinkWrap: true,
+        itemCount: questions.length,
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 5,
         ),
+        itemBuilder: (context, index) {
+          return questionButton(context,
+              index: index,
+              questionsProvider: questionsProvider,
+              questions: questions);
+        },
       ),
     );
   }
-}
 
-List<Widget> questions(BuildContext context,
-    {required ValueNotifier<List<Question>> questions}) {
-  List<Widget> children = [];
-  final w = (MediaQuery.of(context).size.width - 4 * (5 - 1)) / 5;
-
-  for (int i = 0; i < questions.value.length; i++) {
-    children.add(questionButton(context, index: i, questions: questions));
-  }
-  return children;
-}
-
-Widget questionButton(BuildContext context,
-    {required int index,
-    required ValueNotifier<List<Question>> questions,
-    double size = 30}) {
-  return TextButton(
-    style: ButtonStyle(
-      backgroundColor: questions.value[index].unlocked || index == 0
-          ? MaterialStateProperty.all(Color(0xFF001C30))
-          : MaterialStateProperty.all(Colors.grey[700]),
-      shape: MaterialStateProperty.all(
-        RoundedRectangleBorder(
-          side: const BorderSide(
-            color: Colors.white,
-            width: 1.0,
+  Widget questionButton(BuildContext context,
+      {required int index,
+      required ChangeNotifierProvider<QuestionsNotifier> questionsProvider,
+      required List<Question> questions,
+      double size = 30}) {
+    return TextButton(
+      style: ButtonStyle(
+        backgroundColor: questions[index].unlocked
+            ? MaterialStateProperty.all(Color(0xFF001C30))
+            : MaterialStateProperty.all(Colors.grey[700]),
+        shape: MaterialStateProperty.all(
+          RoundedRectangleBorder(
+            side: const BorderSide(
+              color: Colors.white,
+              width: 1.0,
+            ),
+            borderRadius: BorderRadius.circular(10.0),
           ),
-          borderRadius: BorderRadius.circular(10.0),
         ),
+        fixedSize: MaterialStateProperty.all(Size(size, size)),
+        padding: MaterialStateProperty.all(EdgeInsets.zero),
       ),
-      fixedSize: MaterialStateProperty.all(Size(size, size)),
-      padding: MaterialStateProperty.all(EdgeInsets.zero),
-    ),
-    onPressed: () {
-      int nextIndex = index + 1 < questions.value.length ? index + 1 : index;
-
-      if (questions.value[index].unlocked) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => Gameplay(
-                    question: questions.value[index],
-                    nextQuestion: questions.value[nextIndex],
-                  )),
-        );
-      }
-    },
-    child: AutoSizeText(
-      (index + 1).toString(),
-      style: const TextStyle(fontSize: 45, color: Color(0xFFDAFFFB)),
-    ),
-  );
+      onPressed: () {
+        if (questions[index].unlocked) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => Gameplay(
+                      question: questions[index],
+                      nextQuestionIndex:
+                          index == questions.length - 1 ? index : index + 1,
+                      questionProvider: questionsProvider,
+                    )),
+          );
+        }
+      },
+      child: AutoSizeText(
+        (index + 1).toString(),
+        style: const TextStyle(fontSize: 45, color: Color(0xFFDAFFFB)),
+      ),
+    );
+  }
 }

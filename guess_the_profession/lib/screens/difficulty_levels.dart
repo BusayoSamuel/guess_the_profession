@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:guess_the_profession/models/question.dart';
 import 'package:guess_the_profession/screens/select_question.dart';
 import 'package:guess_the_profession/widgets/background.dart';
-import 'package:guess_the_profession/data/questions.dart';
 
 enum Difficulty { easy, medium, hard }
 
@@ -29,28 +27,25 @@ class DifficultyLevels extends StatelessWidget {
 }
 
 Widget gamePackButton(BuildContext context, Difficulty difficulty) {
-  ValueNotifier<List<Question>> selectedQuestionPack;
   String text;
+
   switch (difficulty) {
     case Difficulty.easy:
       text = "Easy Pack";
-      selectedQuestionPack = easyQuestions;
     case Difficulty.medium:
       text = "Medium Pack";
-    //selectedQuestionPack = mediumQuestions;
     case Difficulty.hard:
       text = "Hard Pack";
-    //selectedQuestionPack = hardQuestions;
   }
+
   return SizedBox(
     width: double.infinity,
     child: OutlinedButton(
       onPressed: () {
-        Navigator.push(
-          context,
+        Navigator.of(context).push(
           MaterialPageRoute(
               builder: (context) => SelectQuestion(
-                    questions: easyQuestions,
+                    difficulty: difficulty,
                   )),
         );
       },
