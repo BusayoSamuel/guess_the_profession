@@ -2,14 +2,17 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:guess_the_profession/data/questions.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Question {
   final String answer;
   final String imageLocation;
   late List<String> options;
-  bool unlocked = false;
+  late bool unlocked;
 
   Question(this.answer, this.imageLocation) {
+    getFromMemory(answer).then((value) => unlocked = value);
+
     List<String> alphabet =
         "abcdefghijklmnopqrstuvwxyz".toUpperCase().split("");
 
@@ -22,6 +25,22 @@ class Question {
 
     options.shuffle();
   }
+
+  Future<bool> getFromMemory(String key) async {
+    var pref = await SharedPreferences.getInstance();
+    var isUnlocked = pref.getBool(key) ?? false;
+    return isUnlocked;
+  }
+
+  Future<void> saveToMemory() async {
+    var pref = await SharedPreferences.getInstance();
+    pref.setBool(answer, unlocked);
+  }
+
+  Future<void> clearMemory() async {
+    var pref = await SharedPreferences.getInstance();
+    pref.clear();
+  }
 }
 
 class QuestionsNotifier extends ChangeNotifier {
@@ -31,6 +50,7 @@ class QuestionsNotifier extends ChangeNotifier {
 
   void unlockItem(int index) {
     questions[index].unlocked = true;
+    questions[index].saveToMemory();
     notifyListeners();
   }
 }

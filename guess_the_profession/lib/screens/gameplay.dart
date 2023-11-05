@@ -30,7 +30,7 @@ class Gameplay extends ConsumerWidget {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
             Image.asset(
-              question.imageLocation, //"assets/images/doctor/stethoscope.jpg",
+              question.imageLocation,
               height: 250,
             ),
             ValueListenableBuilder<List<List<dynamic>>>(

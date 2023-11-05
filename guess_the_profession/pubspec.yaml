@@ -37,7 +37,8 @@ dependencies:
   cupertino_icons: ^1.0.2
   auto_size_text: ^3.0.0
   provider: ^6.0.5
-  flutter_riverpod: ^2.4.3
+  flutter_riverpod: 2.4.3
+  shared_preferences: ^2.2.2
 
 dev_dependencies:
   flutter_test:
@@ -62,10 +63,35 @@ flutter:
   uses-material-design: true
 
   assets:
+  # Easy
      - assets/images/Icon-192.png
      - assets/images/easy_pack/doctor/stethoscope.jpg
      - assets/images/easy_pack/student/pencil.jpg
      - assets/images/easy_pack/carpenter/pincers.jpg
+     - assets/images/easy_pack/farmer/hand_hoe.jpg
+     - assets/images/easy_pack/judge/gavel.jpg
+     - assets/images/easy_pack/maid/mop.jpg
+    
+  # Medium
+     - assets/images/medium_pack/architect/drawing_board.jpg
+     - assets/images/medium_pack/artist/painting_knives.jpg
+     - assets/images/medium_pack/baker/sifter.jpg
+     - assets/images/medium_pack/dentist/dental_probe.png
+     - assets/images/medium_pack/fire_brigade/firefighter_axe.jpg
+     - assets/images/medium_pack/gardener/secateurs.jpg
+     - assets/images/medium_pack/police/taser.webp
+     - assets/images/medium_pack/scientist/bunsen_burner.jpg
+     - assets/images/medium_pack/tailor/seam_ripper.png
+     - assets/images/medium_pack/teacher/projecting_screen.jpg
+
+  # Hard
+     - assets/images/hard_pack/undertaker/embalming_table.jpg
+     - assets/images/hard_pack/aircraft_painter/air_compressors.PNG
+     - assets/images/hard_pack/acupunturist/acupuncture_needles.JPG
+     - assets/images/hard_pack/podiatrist/cantilever_nail_clippers.JPG
+
+
+
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

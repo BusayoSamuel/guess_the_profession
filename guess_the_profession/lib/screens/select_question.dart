@@ -35,10 +35,18 @@ class SelectQuestion extends ConsumerWidget {
           crossAxisCount: 5,
         ),
         itemBuilder: (context, index) {
-          return questionButton(context,
-              index: index,
-              questionsProvider: questionsProvider,
-              questions: questions);
+          return FutureBuilder<bool>(
+              future: questions[index].getFromMemory(questions[index].answer),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return questionButton(context,
+                      index: index,
+                      questionsProvider: questionsProvider,
+                      questions: questions);
+                } else {
+                  return SizedBox();
+                }
+              });
         },
       ),
     );
@@ -67,6 +75,7 @@ class SelectQuestion extends ConsumerWidget {
         padding: MaterialStateProperty.all(EdgeInsets.zero),
       ),
       onPressed: () {
+        //questions[index].clearMemory();
         if (questions[index].unlocked) {
           Navigator.push(
             context,
