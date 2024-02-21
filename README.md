@@ -2,6 +2,9 @@
 
 A new Flutter project.
 
+Join the IOS beta program using the following link:
+https://testflight.apple.com/join/JEqhJA9k
+
 ## Getting Started
 
 This project is a starting point for a Flutter application.
