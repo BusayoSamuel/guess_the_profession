@@ -15,10 +15,8 @@ class Gameplay extends ConsumerWidget {
   final Question question;
   final int nextQuestionIndex;
 
-  late final chosenLetters =
-      ValueNotifier(List<List>.filled(question.answer.length, ["", () {}]));
-  late final actions =
-      List<void Function()>.filled(question.answer.length, () {});
+  late final chosenLetters = ValueNotifier(List<List>.filled(question.answer.length, ["", () {}]));
+  late final actions = List<void Function()>.filled(question.answer.length, () {});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -42,8 +40,7 @@ class Gameplay extends ConsumerWidget {
                       thickness: 1,
                     ),
                     answerBoxes(context,
-                        number: question.answer.length,
-                        response: chosenLetters.value),
+                        number: question.answer.length, response: chosenLetters.value),
                     const Divider(
                       color: Colors.black,
                       thickness: 1,
@@ -56,9 +53,7 @@ class Gameplay extends ConsumerWidget {
                 crossAxisCount: 6,
               ),
               children: letterOptions(context,
-                  letters: question.options,
-                  ref: ref,
-                  questionProvider: questionProvider),
+                  letters: question.options, ref: ref, questionProvider: questionProvider),
             ),
           ],
         ),
@@ -74,8 +69,7 @@ class Gameplay extends ConsumerWidget {
     final w = (MediaQuery.of(context).size.width - 4 * (12 - 1)) / 12;
 
     for (final letter in letters) {
-      children.add(letterButton(
-          letter: letter, ref: ref, questionProvider: questionProvider));
+      children.add(letterButton(letter: letter, ref: ref, questionProvider: questionProvider));
     }
     return children;
   }
@@ -96,12 +90,13 @@ class Gameplay extends ConsumerWidget {
       return Visibility(
         visible: isVisible,
         child: styledTextButton(letter, () {
-          chosenLetters.value[chosenLetters.value.indexWhere(
-              (element) => element.contains(""))] = [letter, toggleVisibility];
+          chosenLetters.value[chosenLetters.value.indexWhere((element) => element.contains(""))] = [
+            letter,
+            toggleVisibility
+          ];
           chosenLetters.notifyListeners();
           toggleVisibility();
-          String chosenAnswer =
-              chosenLetters.value.map((e) => e[0].toString()).join();
+          String chosenAnswer = chosenLetters.value.map((e) => e[0].toString()).join();
           if (chosenAnswer == question.answer) {
             showDialog(
                 context: context,
@@ -111,9 +106,7 @@ class Gameplay extends ConsumerWidget {
                       actions: [
                         TextButton(
                           onPressed: () {
-                            ref
-                                .read(questionProvider.notifier)
-                                .unlockItem(nextQuestionIndex);
+                            ref.read(questionProvider.notifier).unlockItem(nextQuestionIndex);
                             Navigator.pop(context);
                             Navigator.pop(context);
                           },
@@ -129,8 +122,7 @@ class Gameplay extends ConsumerWidget {
 
   Widget answerBoxes(BuildContext context,
       {required int number, required List<List<dynamic>> response}) {
-    final size =
-        (MediaQuery.of(context).size.width - 14 * (number - 1)) / number;
+    final size = (MediaQuery.of(context).size.width - 14 * (number - 1)) / number;
 
     return StatefulBuilder(builder: (context, setState) {
       return Wrap(
@@ -156,8 +148,8 @@ class Gameplay extends ConsumerWidget {
   Widget styledTextButton(String text, void Function() onPressed) {
     return TextButton(
       style: ButtonStyle(
-        backgroundColor: MaterialStateProperty.all(Color(0xFF001C30)),
-        shape: MaterialStateProperty.all(
+        backgroundColor: WidgetStateProperty.all(const Color(0xFF001C30)),
+        shape: WidgetStateProperty.all(
           RoundedRectangleBorder(
             side: const BorderSide(
               color: Colors.white,
@@ -166,7 +158,7 @@ class Gameplay extends ConsumerWidget {
             borderRadius: BorderRadius.circular(10.0),
           ),
         ),
-        padding: MaterialStateProperty.all(EdgeInsets.zero),
+        padding: WidgetStateProperty.all(EdgeInsets.zero),
       ),
       onPressed: onPressed,
       child: AutoSizeText(

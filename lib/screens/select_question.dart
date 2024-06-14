@@ -40,11 +40,9 @@ class SelectQuestion extends ConsumerWidget {
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   return questionButton(context,
-                      index: index,
-                      questionsProvider: questionsProvider,
-                      questions: questions);
+                      index: index, questionsProvider: questionsProvider, questions: questions);
                 } else {
-                  return SizedBox();
+                  return const SizedBox();
                 }
               });
         },
@@ -60,9 +58,9 @@ class SelectQuestion extends ConsumerWidget {
     return TextButton(
       style: ButtonStyle(
         backgroundColor: questions[index].unlocked
-            ? MaterialStateProperty.all(Color(0xFF001C30))
-            : MaterialStateProperty.all(Colors.grey[700]),
-        shape: MaterialStateProperty.all(
+            ? WidgetStateProperty.all(const Color(0xFF001C30))
+            : WidgetStateProperty.all(Colors.grey[700]),
+        shape: WidgetStateProperty.all(
           RoundedRectangleBorder(
             side: const BorderSide(
               color: Colors.white,
@@ -71,8 +69,8 @@ class SelectQuestion extends ConsumerWidget {
             borderRadius: BorderRadius.circular(10.0),
           ),
         ),
-        fixedSize: MaterialStateProperty.all(Size(size, size)),
-        padding: MaterialStateProperty.all(EdgeInsets.zero),
+        fixedSize: WidgetStateProperty.all(Size(size, size)),
+        padding: WidgetStateProperty.all(EdgeInsets.zero),
       ),
       onPressed: () {
         //questions[index].clearMemory();
@@ -82,8 +80,7 @@ class SelectQuestion extends ConsumerWidget {
             MaterialPageRoute(
                 builder: (context) => Gameplay(
                       question: questions[index],
-                      nextQuestionIndex:
-                          index == questions.length - 1 ? index : index + 1,
+                      nextQuestionIndex: index == questions.length - 1 ? index : index + 1,
                       questionProvider: questionsProvider,
                     )),
           );
