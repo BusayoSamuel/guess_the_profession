@@ -1,4 +1,4 @@
-package com.example.guess_the_profession
+package com.BusayoSamuel.GuessTheProfession
 
 import io.flutter.embedding.android.FlutterActivity
 
